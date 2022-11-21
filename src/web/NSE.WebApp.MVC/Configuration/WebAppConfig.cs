@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NSE.WebApp.MVC.Extensions;
 
 namespace NSE.WebApp.MVC.Configuration
 {
@@ -20,7 +21,8 @@ namespace NSE.WebApp.MVC.Configuration
             }
             else
             {
-                applicationBuilder.UseExceptionHandler("/Home/Error");
+                applicationBuilder.UseExceptionHandler("/erro/500");
+                applicationBuilder.UseStatusCodePagesWithRedirects("/erro/{0}");
                 applicationBuilder.UseHsts();
             }
             applicationBuilder.UseHttpsRedirection();
@@ -29,6 +31,8 @@ namespace NSE.WebApp.MVC.Configuration
             applicationBuilder.UseRouting();
 
             applicationBuilder.UseIdentityConfiguration();
+
+            applicationBuilder.UseMiddleware<ExceptionMiddleware>();
 
             applicationBuilder.UseEndpoints(endpoints =>
             {
