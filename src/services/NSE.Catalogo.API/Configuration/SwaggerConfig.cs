@@ -7,7 +7,7 @@ namespace NSE.Catalogo.API.Configuration
 {
     public static class SwaggerConfig
     {
-        public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services)
+        public static void AddSwaggerConfiguration(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
             {
@@ -18,16 +18,39 @@ namespace NSE.Catalogo.API.Configuration
                     Contact = new OpenApiContact() { Name = "Douglas Pereira", Email = "douglas.pereira@confitec.com.br" },
                     License = new OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/license/MIT") }
                 });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "Insira o token JWT desta maneira: Bearer {seu token}",
+                    Name = "Authorization",
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme()
+                        {
+                            Reference = new OpenApiReference()
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[]{}
+                    }
+                });
             });
-            return services;
         }
 
-        public static IApplicationBuilder UseSwaggerConfiguration(this IApplicationBuilder applicationBuilder)
+        public static void UseSwaggerConfiguration(this IApplicationBuilder applicationBuilder)
         {
             applicationBuilder.UseSwagger();
             applicationBuilder.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "v1"));
 
-            return applicationBuilder;
         }
     }
 }
