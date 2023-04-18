@@ -9,19 +9,30 @@ namespace NSE.Clientes.API.Application.Commands
 {
     public class ClienteCommandHandler : CommandHandler, IRequestHandler<RegistrarClienteCommand, ValidationResult>
     {
+        private readonly IClienteRepository _clienteRepository;
+
+        public ClienteCommandHandler(IClienteRepository clienteRepository)
+        {
+            _clienteRepository = clienteRepository;
+        }
+
         public async Task<ValidationResult> Handle(RegistrarClienteCommand request, CancellationToken cancellationToken)
         {
-            if (request.EhValido()) return request.ValidationResult;
+            if (!request.EhValido()) return request.ValidationResult;
 
             var cliente = new Cliente(request.Id, request.Nome, request.Email, request.Cpf);
 
-            if (true) // Já existe cliente com o cpf informado
+            var clienteExistente = await _clienteRepository.ObterPorCpf(cliente.Cpf.Numero);
+
+            if (clienteExistente != null)
             {
-                AdicionarErro("Cliente já existe!");
+                AdicionarErro("Este CPF já está em uso");
                 return ValidationResult;
             }
 
-            return request.ValidationResult;
+            _clienteRepository.Adicionar(cliente);
+
+            return await PersirtirDados(_clienteRepository.UnitOfWork);
         }
     }
 }
