@@ -1,4 +1,6 @@
-﻿using NSE.Core.Messages;
+﻿using FluentValidation;
+using NSE.Core.DomainObjects;
+using NSE.Core.Messages;
 using System;
 
 namespace NSE.Clientes.API.Application.Commands
@@ -17,6 +19,43 @@ namespace NSE.Clientes.API.Application.Commands
             Nome = nome;
             Email = email;
             Cpf = cpf;
+        }
+
+        public override bool EhValido()
+        {
+            return new RegistrarClienteValidation().Validate(this).IsValid;
+        }
+    }
+
+    public class RegistrarClienteValidation : AbstractValidator<RegistrarClienteCommand>
+    {
+        public RegistrarClienteValidation()
+        {
+            RuleFor(c => c.Id)
+                .NotEqual(Guid.Empty)
+                .WithMessage("Id do cliente inválido");
+
+            RuleFor(c => c.Nome)
+                .NotEmpty()
+                .WithMessage("O nome do cliente não foi informado");
+
+            RuleFor(c => c.Cpf)
+                .Must(TerCpfValido)
+                .WithMessage("O cpf informado não é válido.");
+
+            RuleFor(c => c.Email)
+                .Must(TerEmailValido)
+                .WithMessage("O email informado não é válido.");
+        }
+
+        protected static bool TerCpfValido(string cpf)
+        {
+            return Cpf.Validar(cpf);
+        }
+
+        protected static bool TerEmailValido(string email)
+        {
+            return Email.Validar(email);
         }
     }
 }
