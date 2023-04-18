@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NSE.Core.Messages;
+using System;
+using System.Collections.Generic;
 
 namespace NSE.Core.DomainObjects
 {
@@ -6,20 +8,47 @@ namespace NSE.Core.DomainObjects
     {
         public Guid Id { get; set; }
 
+        protected Entity()
+        {
+            Id = Guid.NewGuid();
+        }
+
+        private List<Event> _eventos;
+
+        public IReadOnlyCollection<Event> Eventos => _eventos?.AsReadOnly();
+
+        public void AdicionarEvento(Event evento)
+        {
+            _eventos ??= new List<Event>();
+            _eventos.Add(evento);
+        }
+
+        public void RemoverEvento(Event eventItem)
+        {
+            _eventos?.Remove(eventItem);
+        }
+
+        public void LimparEventos()
+        {
+            _eventos?.Clear();
+        }
+
+        #region Comparações
+
         public override bool Equals(object obj)
         {
-            var compareTo = obj as Entity; 
+            var compareTo = obj as Entity;
 
-            if(ReferenceEquals(this, compareTo)) return true;
-            if(ReferenceEquals(null, compareTo)) return false;
+            if (ReferenceEquals(this, compareTo)) return true;
+            if (ReferenceEquals(null, compareTo)) return false;
 
             return Id.Equals(compareTo.Id);
         }
 
         public static bool operator ==(Entity a, Entity b)
         {
-            if(ReferenceEquals(a, null) && ReferenceEquals(b, null)) return true;
-            if(ReferenceEquals(a, null) || ReferenceEquals(b, null)) return false;
+            if (ReferenceEquals(a, null) && ReferenceEquals(b, null)) return true;
+            if (ReferenceEquals(a, null) || ReferenceEquals(b, null)) return false;
 
             return a.Equals(b);
         }
@@ -38,5 +67,7 @@ namespace NSE.Core.DomainObjects
         {
             return $"{GetType().Name} [Id={Id}]";
         }
+
+        #endregion
     }
 }

@@ -1,6 +1,8 @@
-﻿namespace NSE.Core.Messages
+﻿using MediatR;
+
+namespace NSE.Core.Messages
 {
-    public class Event : Message
+    public class Event : Message, INotification
     {
     }
 }
