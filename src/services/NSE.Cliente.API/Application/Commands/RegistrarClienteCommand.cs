@@ -23,7 +23,8 @@ namespace NSE.Clientes.API.Application.Commands
 
         public override bool EhValido()
         {
-            return new RegistrarClienteValidation().Validate(this).IsValid;
+            ValidationResult = new RegistrarClienteValidation().Validate(this);
+            return ValidationResult.IsValid;
         }
     }
 
