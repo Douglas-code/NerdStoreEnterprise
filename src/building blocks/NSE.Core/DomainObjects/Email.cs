@@ -18,8 +18,9 @@ namespace NSE.Core.DomainObjects
 
         public static bool Validar(string email)
         {
-            var regexEmail = new Regex(@"^ ([\w\.\-] +)@([\w\-] +)((\.(\w){ 2, 3 })+)$");
-            return regexEmail.IsMatch(email);
+            string emailRegex = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+
+            return Regex.IsMatch(email, emailRegex);
         }
     }
 }
