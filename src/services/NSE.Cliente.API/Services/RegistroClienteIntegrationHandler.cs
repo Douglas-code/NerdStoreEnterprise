@@ -22,14 +22,23 @@ namespace NSE.Clientes.API.Services
             _bus = bus;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        private void SetResponder()
         {
-            await _bus.RespondAsync<UsuarioRegistradoIntegrationEvent, ResponseMessage>(async request => await RegistrarCliente(request));
-            
-            while(!stoppingToken.IsCancellationRequested)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(15), stoppingToken);
-            }
+            _bus.RespondAsync<UsuarioRegistradoIntegrationEvent, ResponseMessage>(async request => await RegistrarCliente(request));
+
+            _bus.AdvancedBus.Connected += OnConnect;
+        }
+
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            SetResponder();
+
+            return Task.CompletedTask;
+        }
+
+        private void OnConnect(object sender, EventArgs e)
+        {
+            SetResponder();
         }
 
         private async Task<ResponseMessage> RegistrarCliente(UsuarioRegistradoIntegrationEvent message)
