@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NSE.Carrinho.API.Model;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace NSE.Carrinho.API.Data
@@ -19,6 +20,7 @@ namespace NSE.Carrinho.API.Data
         {
 
             foreach (var property in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetProperties().Where(p => p.ClrType == typeof(string)))) property.SetColumnType("varchar(100)");
+            modelBuilder.Ignore<ValidationResult>();
 
             modelBuilder.Entity<CarrinhoCliente>().HasIndex(c => c.ClienteId).HasName("IDX_Cliente");
             modelBuilder.Entity<CarrinhoCliente>().HasMany(c => c.Itens).WithOne(i => i.CarrinhoCliente).HasForeignKey(fk => fk.CarrinhoId);
