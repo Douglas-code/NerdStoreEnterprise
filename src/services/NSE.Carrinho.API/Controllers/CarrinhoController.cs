@@ -43,7 +43,6 @@ namespace NSE.Carrinho.API.Controllers
                 ManipularCarrinhoExistente(carrinho, item);
             }
 
-            ValidarCarrinho(carrinho);
             if (!OperacaoValida()) return CustomResponse();
 
             await PersistirDados();
@@ -99,6 +98,7 @@ namespace NSE.Carrinho.API.Controllers
             var carrinho = new CarrinhoCliente(_aspNetUser.ObterUserId());
             carrinho.AdicionarItem(item);
 
+            ValidarCarrinho(carrinho);
             _context.CarrinhoCliente.Add(carrinho);
         }
 
@@ -107,8 +107,9 @@ namespace NSE.Carrinho.API.Controllers
             var produtoItemExistente = carrinho.CarrinhoItemExistente(item);
 
             carrinho.AdicionarItem(item);
+			ValidarCarrinho(carrinho);
 
-            if (produtoItemExistente)
+			if (produtoItemExistente)
             {
                 _context.CarrinhoItens.Update(carrinho.ObterPorProdutoId(item.ProdutoId));
             }

@@ -38,8 +38,6 @@ namespace NSE.Carrinho.API.Configuration
 
             app.UseAuthConfiguration();
 
-            app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
