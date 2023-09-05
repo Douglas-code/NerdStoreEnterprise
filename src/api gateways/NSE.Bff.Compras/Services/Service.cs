@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using NSE.Core.Comunication;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -24,5 +25,7 @@ namespace NSE.Bff.Compras.Services
             response.EnsureSuccessStatusCode();
             return true;
         }
+
+        protected ResponseResult RetornoOk() => new ResponseResult();
     }
 }

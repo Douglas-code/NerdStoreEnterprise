@@ -1,6 +1,7 @@
 ﻿using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using NSE.Core.Comunication;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -43,6 +44,25 @@ namespace NSE.Identidade.API.Controllers
             }
 
             return CustomResponse();
+        }
+
+        protected ActionResult CustomResponse(ResponseResult response)
+        {
+            ResponsePossuiErros(response);
+
+            return CustomResponse();
+        }
+
+        protected bool ResponsePossuiErros(ResponseResult response)
+        {
+            if(response == null || !response.Errors.Mensagens.Any()) return false;
+
+            foreach(var mensagem in response.Errors.Mensagens)
+            {
+                AdicionarErroProcessamento(mensagem);
+            }
+
+            return true;
         }
 
         protected bool OperacaoValida()
